@@ -14,7 +14,7 @@ import qualified Token
 import           Token                          ( Token )
 
 type Index = Int
-type Hash
+type Hash = Int
 
 -- | /O(n)/ 'tokenize' @s@ returns the list of tokens for the relevant characters in
 -- @s@

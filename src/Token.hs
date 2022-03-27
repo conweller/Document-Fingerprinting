@@ -44,44 +44,44 @@ data Token
   deriving (Enum, Ord, Eq, Show, Bounded)
 
 
-fromChar :: Char -> Token
-fromChar 'a' = T_A
-fromChar 'b' = T_B
-fromChar 'c' = T_C
-fromChar 'd' = T_D
-fromChar 'e' = T_E
-fromChar 'f' = T_F
-fromChar 'g' = T_G
-fromChar 'h' = T_H
-fromChar 'i' = T_I
-fromChar 'j' = T_J
-fromChar 'k' = T_K
-fromChar 'l' = T_L
-fromChar 'm' = T_M
-fromChar 'n' = T_N
-fromChar 'o' = T_O
-fromChar 'p' = T_P
-fromChar 'q' = T_Q
-fromChar 'r' = T_R
-fromChar 's' = T_S
-fromChar 't' = T_T
-fromChar 'u' = T_U
-fromChar 'v' = T_V
-fromChar 'w' = T_W
-fromChar 'x' = T_X
-fromChar 'y' = T_Y
-fromChar 'z' = T_Z
-fromChar '0' = T_0
-fromChar '1' = T_1
-fromChar '2' = T_2
-fromChar '3' = T_3
-fromChar '4' = T_4
-fromChar '5' = T_5
-fromChar '6' = T_6
-fromChar '7' = T_7
-fromChar '8' = T_8
-fromChar '9' = T_9
-fromChar _ = error "character must be lowercase alphanumeric"
+fromChar :: Char -> Maybe Token
+fromChar 'a' = Just T_A
+fromChar 'b' = Just T_B
+fromChar 'c' = Just T_C
+fromChar 'd' = Just T_D
+fromChar 'e' = Just T_E
+fromChar 'f' = Just T_F
+fromChar 'g' = Just T_G
+fromChar 'h' = Just T_H
+fromChar 'i' = Just T_I
+fromChar 'j' = Just T_J
+fromChar 'k' = Just T_K
+fromChar 'l' = Just T_L
+fromChar 'm' = Just T_M
+fromChar 'n' = Just T_N
+fromChar 'o' = Just T_O
+fromChar 'p' = Just T_P
+fromChar 'q' = Just T_Q
+fromChar 'r' = Just T_R
+fromChar 's' = Just T_S
+fromChar 't' = Just T_T
+fromChar 'u' = Just T_U
+fromChar 'v' = Just T_V
+fromChar 'w' = Just T_W
+fromChar 'x' = Just T_X
+fromChar 'y' = Just T_Y
+fromChar 'z' = Just T_Z
+fromChar '0' = Just T_0
+fromChar '1' = Just T_1
+fromChar '2' = Just T_2
+fromChar '3' = Just T_3
+fromChar '4' = Just T_4
+fromChar '5' = Just T_5
+fromChar '6' = Just T_6
+fromChar '7' = Just T_7
+fromChar '8' = Just T_8
+fromChar '9' = Just T_9
+fromChar _ = Nothing
 
 ord :: Token -> Int
 ord = fromEnum

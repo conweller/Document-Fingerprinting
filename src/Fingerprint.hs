@@ -5,27 +5,29 @@ module Fingerprint
 import           Control.Monad.Trans.State      ( evalState
                                                 , state
                                                 )
-import           Data.Char                      ( isAlphaNum
-                                                , toLower
-                                                )
+import           Data.Char                      ( toLower )
 import           Data.Foldable                  ( minimumBy )
 import           Data.List.Split                ( chunksOf )
+import           Data.Maybe                     ( mapMaybe )
 import           Data.Tuple.Extra               ( dupe )
 import qualified Token
 import           Token                          ( Token )
 
--- | /O(n)/ 'getTokens' @s@ returns the list of tokens for the relevant characters in
+type Index = Int
+type Hash
+
+-- | /O(n)/ 'tokenize' @s@ returns the list of tokens for the relevant characters in
 -- @s@
-getTokens :: String -> [Token]
-getTokens = map (Token.fromChar . toLower) . filter isAlphaNum
+tokenize :: String -> [Token]
+tokenize = mapMaybe (Token.fromChar . toLower)
 
 -- | /O(n)/ 'rollingHash' @k@ @s@ returns a list of hashes of the @k@-grams in
 -- @s@ using the rolling hashing function described in Karp and Rabin
 -- https://doi.org/10.1147/rd.312.0249
-rollingHash :: Int -> String -> [Int]
+rollingHash :: Int -> String -> [Hash]
 rollingHash k s = evalState hashStates 0
  where
-  tokenHashes = map Token.ord (getTokens s)
+  tokenHashes = map Token.ord (tokenize s)
   base        = Token.ord (maxBound :: Token)
   bases       = map (base ^) [k - 1, k - 2 .. 0]
   hashWithPrev prevTokenHash newTokenHash prevHash =
@@ -39,7 +41,7 @@ rollingHash k s = evalState hashStates 0
 -- using the winnowing algorithm described in Schleimer, Wilkerson, and Aiken
 -- https://doi.org/10.1145/872757.872770, using windows of size @w@ on the
 -- @k@-grams of @s@
-fingerprint :: Int -> Int -> String -> [(Int, Int)]
+fingerprint :: Int -> Int -> String -> [(Hash, Index)]
 fingerprint w k =
   map
       (minimumBy

@@ -1,6 +1,5 @@
 module Main where
 
-import qualified Data.Map                      as Map
 import           Fingerprint
 import           Query
 

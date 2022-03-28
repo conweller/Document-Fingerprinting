@@ -18,10 +18,7 @@ import qualified Token
 import           Token                          ( Token )
 
 data Position = Position Int Int
-  deriving (Eq, Ord)
-
-instance Show Position where
-  show (Position l c) = "<" ++ show l ++ "," ++ show c ++ ">"
+  deriving (Eq, Ord, Show)
 
 data Fingerprint = Fingerprint
   { name   :: String
@@ -34,7 +31,7 @@ type Hash = Integer
 chars :: String -> [(Char, Position)]
 chars =
   concat
-    . flip (zipWith (\cs i -> zipWith (\c j -> (c, Position i j)) cs [1 ..])) [1 ..]
+    . zipWith (\i cs -> zipWith (\j c -> (c, Position i j)) [1 ..] cs) [1 ..]
     . lines
 
 
@@ -53,8 +50,8 @@ tokenize = mapMaybe charPos2TokenPos . chars
 --
 -- Example:
 --
--- >>> rollingHash 5 "Hello, world"
--- [(10689749,((1,1),(1,5))),(6488112,((1,2),(1,8))),(16996434,((1,3),(1,9))),(17134582,((1,4),(1,10))),(21969756,((1,5),(1,11))),(33635213,((1,8),(1,12)))]
+-- >>> rollingHash 8 "Hello, world"
+-- [(16041305554131,(Position 1 1,Position 1 11)),(9736223691463,(Position 1 2,Position 1 12))]
 --
 rollingHash :: Int -> String -> [(Hash, (Position, Position))]
 rollingHash k s = zip (evalState hashStates 0) hashPositions

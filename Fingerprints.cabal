@@ -9,6 +9,7 @@ library
     exposed-modules:
         Fingerprint
         Token
+        Query
 
     hs-source-dirs:   src
     default-language: Haskell2010
@@ -16,6 +17,7 @@ library
         base >=4.7 && <5,
         transformers,
         extra,
+        containers,
         split
 
 executable Fingerprints
@@ -24,4 +26,5 @@ executable Fingerprints
     default-language: Haskell2010
     build-depends:
         base ^>=4.14.3.0,
+        containers,
         Fingerprints

@@ -4,6 +4,7 @@ module Token
   , ord
   ) where
 
+
 data Token
   = T_A
   | T_B
@@ -43,7 +44,6 @@ data Token
   | T_9
   deriving (Enum, Ord, Eq, Show, Bounded)
 
-
 fromChar :: Char -> Maybe Token
 fromChar 'a' = Just T_A
 fromChar 'b' = Just T_B
@@ -81,7 +81,7 @@ fromChar '6' = Just T_6
 fromChar '7' = Just T_7
 fromChar '8' = Just T_8
 fromChar '9' = Just T_9
-fromChar _ = Nothing
+fromChar _   = Nothing
 
-ord :: Token -> Int
-ord = fromEnum
+ord :: Token -> Integer
+ord = fromIntegral . fromEnum

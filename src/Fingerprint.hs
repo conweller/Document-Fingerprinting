@@ -1,7 +1,9 @@
 module Fingerprint
   ( fingerprint
+  , tokenize
+  , rollingHash
   , Hash
-  , Position
+  , Position(..)
   , Fingerprint(..)
   ) where
 
@@ -10,8 +12,6 @@ import           Control.Monad.Trans.State      ( evalState
                                                 )
 import           Data.Char                      ( toLower )
 import           Data.List.Split                ( chunksOf )
-import qualified Data.Map                      as Map
-import           Data.Map                       ( Map )
 import           Data.Maybe                     ( mapMaybe )
 import           Data.Tuple.Extra               ( dupe )
 import qualified Token
@@ -22,29 +22,27 @@ data Position = Position Int Int
 
 data Fingerprint = Fingerprint
   { name   :: String
-  , hashes :: Map Hash (Position, Position)
+  , hashes :: [(Hash, (Position, Position))]
   }
   deriving Show
 
 type Hash = Integer
 
-chars :: String -> [(Char, Position)]
-chars =
+positionedChars :: String -> [(Char, Position)]
+positionedChars =
   concat
     . zipWith (\i cs -> zipWith (\j c -> (c, Position i j)) [1 ..] cs) [1 ..]
     . lines
 
 
--- | /O(n)/ 'tokenize' @s@ returns the list of tokens for the relevant characters in
--- @s@
 tokenize :: String -> [(Token, Position)]
-tokenize = mapMaybe charPos2TokenPos . chars
+tokenize = mapMaybe fromPositionedChar . positionedChars
  where
-  charPos2TokenPos (c, p) = do
+  fromPositionedChar (c, p) = do
     t <- Token.fromChar (toLower c)
     pure (t, p)
 
--- | /O(n)/ 'rollingHash' @k@ @s@ returns a list of hashes of the @k@-grams in
+-- | /O(n)/. 'rollingHash' @k@ @s@ returns a list of hashes of the @k@-grams in
 -- @s@ using the rolling hashing function described in Karp and Rabin
 -- https://doi.org/10.1147/rd.312.0249
 --
@@ -67,10 +65,10 @@ rollingHash k s = zip (evalState hashStates 0) hashPositions
   positions     = map snd (tokenize s)
   hashPositions = zip positions (drop (k - 1) positions)
 
--- | /O(w * n * log n)/ 'fingerprint' @w@ @k@ @s@ returns the document fingerprint of @s@
--- using the winnowing algorithm described in Schleimer, Wilkerson, and Aiken
--- https://doi.org/10.1145/872757.872770, using windows of size @w@ on the
--- @k@-grams of @s@
+-- | /O(w * n * log n)/. 'fingerprint' @n@ @w@ @k@ @s@ returns the document
+-- fingerprint of @s@ using the winnowing algorithm described in Schleimer,
+-- Wilkerson, and Aiken https://doi.org/10.1145/872757.872770, using windows of
+-- size @w@ on the @k@-grams of @s@
 fingerprint :: String -> Int -> Int -> String -> Fingerprint
 fingerprint n w k =
-  Fingerprint n . Map.fromList . map minimum . chunksOf w . rollingHash k
+  Fingerprint n . map minimum . chunksOf w . rollingHash k

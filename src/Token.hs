@@ -83,5 +83,5 @@ fromChar '8' = Just T_8
 fromChar '9' = Just T_9
 fromChar _   = Nothing
 
-ord :: Token -> Integer
+ord ::  Integral n => Token -> n
 ord = fromIntegral . fromEnum

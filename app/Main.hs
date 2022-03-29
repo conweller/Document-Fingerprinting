@@ -1,17 +1,22 @@
-module Main where
+module Main
+  ( main
+  ) where
 
 import           Fingerprint
 import           Query
+import           System.Directory
+import qualified System.IO.Strict              as S
 
+
+dir :: [Char]
+dir = "../../abstract/plagiarism-dataset/src/A2016/Z1/Z1/"
 
 main :: IO ()
 main = do
-  doc1 <- readFile
-    "../../abstract/plagiarism-dataset/src/A2016/Z1/Z1/student7386.c"
-  doc2 <- readFile
-    "../../abstract/plagiarism-dataset/src/A2016/Z1/Z1/student9538.c"
-  print $ matches (fingerprint "student7386" w k doc1)
-                  (fingerprint "student9538" w k doc2)
+  fingerprints <- listDirectory dir
+    >>= mapM (\path -> fingerprint path w k <$> S.readFile (dir ++ path))
+  print $ allToAll t fingerprints
  where
   w = 100
   k = 50
+  t = 3

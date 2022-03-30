@@ -65,7 +65,7 @@ rollingHash k s = zip (evalState hashStates 0) hashPositions
   positions     = map snd (tokenize s)
   hashPositions = zip positions (drop (k - 1) positions)
 
--- | /O(w * n * log n)/. 'fingerprint' @n@ @w@ @k@ @s@ returns the document
+-- | /O(w * n)/. 'fingerprint' @n@ @w@ @k@ @s@ returns the document
 -- fingerprint of @s@ using the winnowing algorithm described in Schleimer,
 -- Wilkerson, and Aiken https://doi.org/10.1145/872757.872770, using windows of
 -- size @w@ on the @k@-grams of @s@
